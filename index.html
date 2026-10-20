@@ -16,8 +16,19 @@
 <body>
   <canvas id="game" aria-label="Pac-Man game"></canvas>
 
-  <!-- On-screen buttons for touch devices; each queues its data-action on game.input. -->
+  <!-- On-screen controls for touch devices: a D-pad that sets game.input.dir, and buttons
+       that each queue their data-action on game.input. -->
   <div id="touch-controls">
+    <div id="dpad" role="group" aria-label="Direction pad">
+      <svg viewBox="0 0 90 90" aria-hidden="true">
+        <path class="pad" d="M30 2h30v28h28v30h-28v28h-30v-28h-28v-30h28z"/>
+        <path class="arrow up" d="M45 9l10 13h-20z"/>
+        <path class="arrow down" d="M45 81l10-13h-20z"/>
+        <path class="arrow left" d="M9 45l13-10v20z"/>
+        <path class="arrow right" d="M81 45l-13-10v20z"/>
+      </svg>
+    </div>
+    <div id="touch-buttons">
     <button type="button" data-action="pause" aria-label="Pause">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
     </button>
@@ -28,6 +39,7 @@
         <path class="cross" d="M16 9l6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </button>
+    </div>
   </div>
 
   <!-- Classic scripts sharing globals; order matters (each file uses the ones above it). -->

@@ -38,7 +38,7 @@ class Input {
     const SWIPE_PX = 14;
     let touch = null;
     window.addEventListener('touchstart', e => {
-      if (e.target.closest && e.target.closest('button')) return;
+      if (e.target.closest && e.target.closest('button, #dpad')) return;
       const t = e.changedTouches[0];
       touch = { id: t.identifier, x: t.clientX, y: t.clientY, swiped: false };
     }, { passive: true });

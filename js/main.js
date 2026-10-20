@@ -4,6 +4,7 @@
   const canvas = document.getElementById('game');
   const game = new Game(canvas);
   const muteButton = document.getElementById('mute-button');
+  const dpad = document.getElementById('dpad');
 
   // Fixed 60 Hz simulation step, decoupled from the display refresh rate.
   const STEP = 1 / 60;
@@ -19,6 +20,7 @@
     }
     game.draw();
     muteButton.setAttribute('aria-pressed', String(game.sound.muted));
+    if (dpad.dataset.dir !== game.input.dir.name) dpad.dataset.dir = game.input.dir.name;
     requestAnimationFrame(frame);
   }
 
@@ -32,6 +34,28 @@
   for (const button of document.querySelectorAll('[data-action]')) {
     button.addEventListener('click', () => game.input.actions.add(button.dataset.action));
   }
+
+  // D-pad: the direction is the arm under the finger, measured from the pad's centre, so
+  // sliding the finger round the pad turns without lifting it. A small dead zone in the
+  // middle keeps the current direction.
+  function steer(e) {
+    const r = dpad.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < r.width * 0.1) return;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      game.input.dir = dx < 0 ? DIRS.left : DIRS.right;
+    } else {
+      game.input.dir = dy < 0 ? DIRS.up : DIRS.down;
+    }
+  }
+  dpad.addEventListener('pointerdown', e => {
+    dpad.setPointerCapture(e.pointerId);
+    steer(e);
+  });
+  dpad.addEventListener('pointermove', e => {
+    if (dpad.hasPointerCapture(e.pointerId)) steer(e);
+  });
 
   // Offline support for the installed web app; service workers need http(s), so skip under file://.
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
