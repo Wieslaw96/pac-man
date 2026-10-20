@@ -31,27 +31,41 @@ class Input {
 
     canvas.addEventListener('click', () => this.actions.add('start'));
 
-    let touchStart = null;
-    canvas.addEventListener('touchstart', e => {
+    // Swipes work anywhere on the screen (not just the canvas) and turn as soon as the
+    // finger has moved SWIPE_PX, without waiting for it to lift. The origin then moves to
+    // the current point, so one continuous drag can steer through several corners.
+    // A touch that never moves that far is a tap ('start').
+    const SWIPE_PX = 14;
+    let touch = null;
+    window.addEventListener('touchstart', e => {
+      if (e.target.closest && e.target.closest('button')) return;
       const t = e.changedTouches[0];
-      touchStart = { x: t.clientX, y: t.clientY };
+      touch = { id: t.identifier, x: t.clientX, y: t.clientY, swiped: false };
     }, { passive: true });
-    canvas.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-    canvas.addEventListener('touchend', e => {
-      if (!touchStart) return;
-      e.preventDefault(); // suppress the synthetic click
-      const t = e.changedTouches[0];
-      const dx = t.clientX - touchStart.x;
-      const dy = t.clientY - touchStart.y;
-      touchStart = null;
-      if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) {
-        this.actions.add('start');
-      } else if (Math.abs(dx) > Math.abs(dy)) {
+    window.addEventListener('touchmove', e => {
+      if (!touch) return;
+      e.preventDefault();
+      const t = [...e.changedTouches].find(t => t.identifier === touch.id);
+      if (!t) return;
+      const dx = t.clientX - touch.x;
+      const dy = t.clientY - touch.y;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_PX) return;
+      if (Math.abs(dx) > Math.abs(dy)) {
         this.dir = dx < 0 ? DIRS.left : DIRS.right;
       } else {
         this.dir = dy < 0 ? DIRS.up : DIRS.down;
       }
+      touch.x = t.clientX;
+      touch.y = t.clientY;
+      touch.swiped = true;
+    }, { passive: false });
+    window.addEventListener('touchend', e => {
+      if (!touch || ![...e.changedTouches].some(t => t.identifier === touch.id)) return;
+      e.preventDefault(); // suppress the synthetic click
+      if (!touch.swiped) this.actions.add('start');
+      touch = null;
     });
+    window.addEventListener('touchcancel', () => { touch = null; });
   }
 
   consume(action) {
