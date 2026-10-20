@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>Pac-Man</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="build/icon.png">
+  <link rel="apple-touch-icon" href="build/icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Pac-Man game"></canvas>
+
+  <!-- On-screen buttons for touch devices; each queues its data-action on game.input. -->
+  <div id="touch-controls">
+    <button type="button" data-action="pause" aria-label="Pause">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+    </button>
+    <button type="button" data-action="mute" id="mute-button" aria-label="Mute" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9h4l5-4v14l-5-4H4z"/>
+        <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path class="cross" d="M16 9l6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Classic scripts sharing globals; order matters (each file uses the ones above it). -->
+  <script src="js/maze.js"></script>
+  <script src="js/actor.js"></script>
+  <script src="js/pacman.js"></script>
+  <script src="js/ghost.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

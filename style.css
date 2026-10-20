@@ -1,0 +1,72 @@
+/* Bundled locally (SIL Open Font License, see fonts/OFL-LICENSE.txt) so the game works offline. */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('fonts/press-start-2p-latin-400-normal.woff2') format('woff2');
+  font-display: swap;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+}
+
+canvas {
+  display: block;
+  /* Fit the 28x36-tile playfield inside the viewport, keeping its aspect ratio. */
+  width: min(calc(100vw - 32px), calc((100vh - 32px) * 28 / 36));
+  aspect-ratio: 28 / 36;
+}
+
+/* Pause/mute buttons, shown only on touch screens. Top-right sits outside the playfield
+   in both portrait (space above it) and landscape (space beside it). */
+#touch-controls {
+  display: none;
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 8px);
+  right: calc(env(safe-area-inset-right) + 8px);
+  gap: 8px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  #touch-controls {
+    display: flex;
+  }
+}
+
+#touch-controls button {
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border: 2px solid #2121de;
+  border-radius: 8px;
+  background: #000;
+  color: #ffff00;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#touch-controls svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+#mute-button .cross,
+#mute-button[aria-pressed="true"] .waves {
+  display: none;
+}
+
+#mute-button[aria-pressed="true"] .cross {
+  display: inline;
+}
